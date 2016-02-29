@@ -4,7 +4,7 @@
 	<head>
 		<meta charset="utf-8">
 
-		<title>RSpec Mocking and Stubbing</title>
+		<title>Mocking and Stubbing in RSpec</title>
 
 		<meta name="description" content="Presention for Ruby Lighting Talks TO">
 		<meta name="author" content="Emily Fan">
@@ -41,70 +41,175 @@
 			<!-- Any section element inside of this container is displayed as a slide -->
 			<div class="slides">
 				<section>
-					<h1>RSpec Mocks</h1>
+					<h2>Mocking and Stubbing in RSpec</h2>
 					<h3>Ruby Lighting Talks T.O.</h3>
+					<small>March 1, 2016</small>
 					<p>
-						<small>By <a href="http://emilyjfan.github.io">Emily Fan</a> / <a href="http://twitter.com/hakimel">@emilyjustinefan</a></small>
+						<small>By <a href="http://emilyjfan.github.io" target="_blank">Emily Fan</a> / <a href="http://twitter.com/emilyjustinefan" target="_blank">@emilyjustinefan</a></small>
 					</p>
+					<aside class="notes">
+						Hello everyone! Today I'll be talking to you about Mocking and Stubbing in RSpec.
+						I'll go over what is it, how and when to use it, and some things to keep in mind when implementing stubs and mocks.
+					</aside>
 				</section>
 
 				<section>
-					<h2>Hello There</h2>
-					<p>
-						reveal.js enables you to create beautiful interactive slide decks using HTML. This presentation will show you examples of what it can do.
-					</p>
-				</section>
+					<h2>Unit Testing</h2>
+					<ul>
+						<p>Unit testing is a software development process in which the smallest testable parts of an application, called units, are individually and independently scrutinized for proper operation.
+						</p>
+					</ul>
 
-				<!-- Example of nested vertical slides -->
-				<section>
-					<section>
-						<h2>Vertical Slides</h2>
-						<p>Slides can be nested inside of each other.</p>
-						<p>Use the <em>Space</em> key to navigate through all slides.</p>
-						<br>
-						<a href="#" class="navigate-down">
-							<img width="178" height="238" data-src="https://s3.amazonaws.com/hakim-static/reveal-js/arrow.png" alt="Down arrow">
-						</a>
-					</section>
-					<section>
-						<h2>Basement Level 1</h2>
-						<p>Nested slides are useful for adding additional detail underneath a high level horizontal slide.</p>
-					</section>
-					<section>
-						<h2>Basement Level 2</h2>
-						<p>That's it, time to go back up.</p>
-						<br>
-						<a href="#/2">
-							<img width="178" height="238" data-src="https://s3.amazonaws.com/hakim-static/reveal-js/arrow.png" alt="Up arrow" style="transform: rotate(180deg); -webkit-transform: rotate(180deg);">
-						</a>
-					</section>
+					<aside class="notes">
+						Before we get into the details, I'd like to begin with a definition of what unit testing is. According to our trusty resource, Wikpedia, unit testing is a software development process in which the small testable part of an application, called units, are individually and independently scrutinized for proper opertation.
+
+						Unit testing requires that we test pieces of our application, such as a class or a single method, and isolate it from all of its dependencies and collaborators. This forces us to focus on the very specific implementation of just that piece of functionality.
+					</aside>
 				</section>
 
 				<section>
-					<h2>Slides</h2>
-					<p>
-						Not a coder? Not a problem. There's a fully-featured visual editor for authoring these, try it out at <a href="http://slides.com" target="_blank">http://slides.com</a>.
-					</p>
+					<h2>Isolated Testing</h2>
+					<blockquote cite="http://searchservervirtualization.techtarget.com/definition/Our-Favorite-Technology-Quotations">
+						&ldquo;When you are writing an isolated test, you are basically hiding as much of your application as you can from that peice of code in order to be able to test it on its own.&rdquo;
+					</blockquote>
+					<p>- Sam Phippen, 2014</p>
+					<aside class="notes">
+						I have a quote here from Sam Phippen, a member of the RSpec core team, who says: in order to achieve isolated testing, you necessarily have to fake part of the world that.
+					</aside>
 				</section>
 
 				<section>
-					<h2>Point of View</h2>
+					<h2>RSpec::Mocks</h2>
 					<p>
-						Press <strong>ESC</strong> to enter the slide overview.
+						Test-double framework for RSpec with support for method stubs, fakes, and message expectations on generated test-doubles and real objects alike.
 					</p>
-					<p>
-						Hold down alt and click on any element to zoom in on it using <a href="http://lab.hakim.se/zoom-js">zoom.js</a>. Alt + click anywhere to zoom back out.
-					</p>
+					<aside class="notes">
+					</aside>
 				</section>
 
 				<section>
-					<h2>Touch Optimized</h2>
+					<h2>Test Doubles</h2>
 					<p>
-						Presentations look great on touch devices, like mobile phones and tablets. Simply swipe through your slides.
+						 An object that stands in for another object in your system during a code example.
 					</p>
+
+					<pre><code class="hljs" data-trim contenteditable>
+
+stand_in_object = double('stand-in-object')
+
+					</code></pre>
+
+					<aside class="notes">What's a test double? you ask. A test double is a term used for any object that stands in for a real object during a test. Often, test doubles are also refered to as mock object, test stubs, and fakes.
+
+					We create a test double using the double method. The string argument is optional but highly recommended because it is used is failure messages
+
+					Doubles are "strict" by default -- any message you have not allowed or expected will trigger an error -- but you can switch a double to being "loose". When creating a double, you can allow messages (and set their return values) by passing a hash.
+
+					Once you have a test double, you can allow or expect messages on it.
+					</aside>
+
 				</section>
 
-				<section data-markdown>
+				<section>
+					<h2>Method Stubs</h2>
+					<p>
+						A method stub is an implementation that returns a pre-determined value
+					</p>
+
+					<pre><code class="hljs" data-trim contenteditable>
+class ReportCard
+  def initialize(student)
+    @student = student
+  end
+
+  def average
+    grades = @student.grades
+    grades.inject{ |sum, el| sum + el }.to_f / grades.size
+  end
+end
+					</code></pre>
+				</section>
+
+				<section>
+					<h2>Method Stubs</h2>
+					<pre><code class="hljs" data-trim contenteditable>
+describe '#average' do
+  it 'calculates the student\'s average grade' do
+    student = double('student')
+    allow(student).to receive(:grades).and_return([80, 90, 70, 80])
+    report_card = ReportCard.new(student)
+
+    expect(report_card.average).to eq(80)
+  end
+end
+					</code></pre>
+				</section>
+
+				<section>
+					<h2>Message (Mock) Expectactions</h2>
+					<p>
+						An expectation that the object should receive the message
+					</p>
+
+					<pre><code class="hljs" data-trim contenteditable>
+class ReportCard
+  def generate(student)
+    Logger.log_report_card(student) if average <= 50
+  end
+
+  .
+  .
+  .
+end
+					</code></pre>
+				</section>
+
+				<section>
+					<h2>Message (Mock) Expectactions</h2>
+					<pre><code class="hljs" data-trim contenteditable>
+describe '#generate' do
+  context 'when the student is failing' do
+    it 'logs a message' do
+      student = double('student', grades: [40, 40, 50, 40])
+      expect(Logger).to receive(:log_report_card).with(student)
+      report_card = ReportCard.new(student)
+
+      report_card.generate(student)
+    end
+  end
+
+  context 'when the student is passing' do
+    it 'does not log a message' do
+      student = double('student', grades: [80, 70, 80, 90])
+      expect(Logger).to_not receive(:log_report_card)
+      report_card = ReportCard.new(student)
+
+      report_card.generate(student)
+    end
+  end
+end
+					</code></pre>
+				</section>
+
+
+				<section>
+					<h2>Mocks ≠ Stubs</h2>
+				</section>
+
+				<section>
+					<h2>Resources</h2>
+					<ul>
+						<li><a href="https://relishapp.com/rspec/rspec-mocks/v/3-2/docs" target="_blank">RSpec Mocks 3.2 - Documentation</a></li>
+						<li><a href="https://www.youtube.com/watch?v=kiHdUU73D14" target="_blank">An Introduction to Spies in RSpec - Sam Phippen (2014)</a></li>
+						<li><a href="https://www.youtube.com/watch?v=R9FOchgTtLM" target="_blank">Why You Don't Get Mock Objects - Gregory Moeck (2011)</a></li>
+						<li><a href="http://www.amazon.ca/The-RSpec-Book-Behaviour-Development/dp/1934356379">The RSpec Book - David Chelimsky (2010)</a></li>
+						<li><a href="http://www.jmock.org/oopsla2004.pdf" target="_blank">Mock Roles Not Objects - Steve Freeman, Nat Pryce, Tim Mackinnon, Joe Walnes (2004)</a></li>
+						<li><a href="http://www.martinfowler.com/articles/mocksArentStubs.html" target="_blank">Mocks Aren't Stubs - Martin Fowler (2007)</a></li>
+					</ul>
+
+				</section>
+
+<!-- 				<section data-markdown>
 					<script type="text/template">
 						## Markdown support
 
@@ -121,105 +226,10 @@
 						```
 					</script>
 				</section>
+ -->
 
-				<section>
-					<section id="fragments">
-						<h2>Fragments</h2>
-						<p>Hit the next arrow...</p>
-						<p class="fragment">... to step through ...</p>
-						<p><span class="fragment">... a</span> <span class="fragment">fragmented</span> <span class="fragment">slide.</span></p>
-
-						<aside class="notes">
-							This slide has fragments which are also stepped through in the notes window.
-						</aside>
-					</section>
-					<section>
-						<h2>Fragment Styles</h2>
-						<p>There's different types of fragments, like:</p>
-						<p class="fragment grow">grow</p>
-						<p class="fragment shrink">shrink</p>
-						<p class="fragment fade-out">fade-out</p>
-						<p class="fragment current-visible">current-visible</p>
-						<p class="fragment highlight-red">highlight-red</p>
-						<p class="fragment highlight-blue">highlight-blue</p>
-					</section>
-				</section>
-
-				<section id="transitions">
-					<h2>Transition Styles</h2>
-					<p>
-						You can select from different transitions, like: <br>
-						<a href="?transition=none#/transitions">None</a> -
-						<a href="?transition=fade#/transitions">Fade</a> -
-						<a href="?transition=slide#/transitions">Slide</a> -
-						<a href="?transition=convex#/transitions">Convex</a> -
-						<a href="?transition=concave#/transitions">Concave</a> -
-						<a href="?transition=zoom#/transitions">Zoom</a>
-					</p>
-				</section>
-
-				<section id="themes">
-					<h2>Themes</h2>
-					<p>
-						reveal.js comes with a few themes built in: <br>
-						<!-- Hacks to swap themes after the page has loaded. Not flexible and only intended for the reveal.js demo deck. -->
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/black.css'); return false;">Black (default)</a> -
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/white.css'); return false;">White</a> -
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/league.css'); return false;">League</a> -
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/sky.css'); return false;">Sky</a> -
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/beige.css'); return false;">Beige</a> -
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/simple.css'); return false;">Simple</a> <br>
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/serif.css'); return false;">Serif</a> -
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/blood.css'); return false;">Blood</a> -
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/night.css'); return false;">Night</a> -
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/moon.css'); return false;">Moon</a> -
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/solarized.css'); return false;">Solarized</a>
-					</p>
-				</section>
-
-				<section>
-					<section data-background="#dddddd">
-						<h2>Slide Backgrounds</h2>
-						<p>
-							Set <code>data-background="#dddddd"</code> on a slide to change the background color. All CSS color formats are supported.
-						</p>
-						<a href="#" class="navigate-down">
-							<img width="178" height="238" data-src="https://s3.amazonaws.com/hakim-static/reveal-js/arrow.png" alt="Down arrow">
-						</a>
-					</section>
-					<section data-background="https://s3.amazonaws.com/hakim-static/reveal-js/image-placeholder.png">
-						<h2>Image Backgrounds</h2>
-						<pre><code class="hljs">&lt;section data-background="image.png"&gt;</code></pre>
-					</section>
-					<section data-background="https://s3.amazonaws.com/hakim-static/reveal-js/image-placeholder.png" data-background-repeat="repeat" data-background-size="100px">
-						<h2>Tiled Backgrounds</h2>
-						<pre><code class="hljs" style="word-wrap: break-word;">&lt;section data-background="image.png" data-background-repeat="repeat" data-background-size="100px"&gt;</code></pre>
-					</section>
-					<section data-background-video="https://s3.amazonaws.com/static.slid.es/site/homepage/v1/homepage-video-editor.mp4,https://s3.amazonaws.com/static.slid.es/site/homepage/v1/homepage-video-editor.webm" data-background-color="#000000">
-						<div style="background-color: rgba(0, 0, 0, 0.9); color: #fff; padding: 20px;">
-							<h2>Video Backgrounds</h2>
-							<pre><code class="hljs" style="word-wrap: break-word;">&lt;section data-background-video="video.mp4,video.webm"&gt;</code></pre>
-						</div>
-					</section>
-					<section data-background="http://i.giphy.com/90F8aUepslB84.gif">
-						<h2>... and GIFs!</h2>
-					</section>
-				</section>
-
-				<section data-transition="slide" data-background="#4d7e65" data-background-transition="zoom">
-					<h2>Background Transitions</h2>
-					<p>
-						Different background transitions are available via the backgroundTransition option. This one's called "zoom".
-					</p>
-					<pre><code class="hljs">Reveal.configure({ backgroundTransition: 'zoom' })</code></pre>
-				</section>
-
-				<section data-transition="slide" data-background="#b5533c" data-background-transition="zoom">
-					<h2>Background Transitions</h2>
-					<p>
-						You can override background transitions per-slide.
-					</p>
-					<pre><code class="hljs" style="word-wrap: break-word;">&lt;section data-background-transition="zoom"&gt;</code></pre>
+				<section data-background="http://i.giphy.com/90F8aUepslB84.gif">
+					<h2>... and GIFs!</h2>
 				</section>
 
 				<section>
@@ -239,30 +249,11 @@ function linkify( selector ) {
     }
   }
 }
+
 					</code></pre>
-					<p>Code syntax highlighting courtesy of <a href="http://softwaremaniacs.org/soft/highlight/en/description/">highlight.js</a>.</p>
 				</section>
 
-				<section>
-					<h2>Marvelous List</h2>
-					<ul>
-						<li>No order here</li>
-						<li>Or here</li>
-						<li>Or here</li>
-						<li>Or here</li>
-					</ul>
-				</section>
-
-				<section>
-					<h2>Fantastic Ordered List</h2>
-					<ol>
-						<li>One is smaller than...</li>
-						<li>Two is smaller than...</li>
-						<li>Three!</li>
-					</ol>
-				</section>
-
-				<section>
+<!-- 				<section>
 					<h2>Tabular Tables</h2>
 					<table>
 						<thead>
@@ -291,92 +282,14 @@ function linkify( selector ) {
 						</tbody>
 					</table>
 				</section>
-
-				<section>
-					<h2>Clever Quotes</h2>
-					<p>
-						These guys come in two forms, inline: <q cite="http://searchservervirtualization.techtarget.com/definition/Our-Favorite-Technology-Quotations">
-						&ldquo;The nice thing about standards is that there are so many to choose from&rdquo;</q> and block:
-					</p>
-					<blockquote cite="http://searchservervirtualization.techtarget.com/definition/Our-Favorite-Technology-Quotations">
-						&ldquo;For years there has been a theory that millions of monkeys typing at random on millions of typewriters would
-						reproduce the entire works of Shakespeare. The Internet has proven this theory to be untrue.&rdquo;
-					</blockquote>
-				</section>
-
-				<section>
-					<h2>Intergalactic Interconnections</h2>
-					<p>
-						You can link between slides internally,
-						<a href="#/2/3">like this</a>.
-					</p>
-				</section>
-
-				<section>
-					<h2>Speaker View</h2>
-					<p>There's a <a href="https://github.com/hakimel/reveal.js#speaker-notes">speaker view</a>. It includes a timer, preview of the upcoming slide as well as your speaker notes.</p>
-					<p>Press the <em>S</em> key to try it out.</p>
-
-					<aside class="notes">
-						Oh hey, these are some notes. They'll be hidden in your presentation, but you can see them if you open the speaker notes window (hit 's' on your keyboard).
-					</aside>
-				</section>
-
-				<section>
+ -->
+<!-- 				<section>
 					<h2>Export to PDF</h2>
 					<p>Presentations can be <a href="https://github.com/hakimel/reveal.js#pdf-export">exported to PDF</a>, here's an example:</p>
 					<iframe src="https://www.slideshare.net/slideshow/embed_code/42840540" width="445" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:3px solid #666; margin-bottom:5px; max-width: 100%;" allowfullscreen> </iframe>
 				</section>
-
-				<section>
-					<h2>Global State</h2>
-					<p>
-						Set <code>data-state="something"</code> on a slide and <code>"something"</code>
-						will be added as a class to the document element when the slide is open. This lets you
-						apply broader style changes, like switching the page background.
-					</p>
-				</section>
-
-				<section data-state="customevent">
-					<h2>State Events</h2>
-					<p>
-						Additionally custom events can be triggered on a per slide basis by binding to the <code>data-state</code> name.
-					</p>
-					<pre><code class="javascript" data-trim contenteditable style="font-size: 18px;">
-Reveal.addEventListener( 'customevent', function() {
-	console.log( '"customevent" has fired' );
-} );
-					</code></pre>
-				</section>
-
-				<section>
-					<h2>Take a Moment</h2>
-					<p>
-						Press B or . on your keyboard to pause the presentation. This is helpful when you're on stage and want to take distracting slides off the screen.
-					</p>
-				</section>
-
-				<section>
-					<h2>Much more</h2>
-					<ul>
-						<li>Right-to-left support</li>
-						<li><a href="https://github.com/hakimel/reveal.js#api">Extensive JavaScript API</a></li>
-						<li><a href="https://github.com/hakimel/reveal.js#auto-sliding">Auto-progression</a></li>
-						<li><a href="https://github.com/hakimel/reveal.js#parallax-background">Parallax backgrounds</a></li>
-						<li><a href="https://github.com/hakimel/reveal.js#keyboard-bindings">Custom keyboard bindings</a></li>
-					</ul>
-				</section>
-
-				<section style="text-align: left;">
-					<h1>THE END</h1>
-					<p>
-						- <a href="http://slides.com">Try the online editor</a> <br>
-						- <a href="https://github.com/hakimel/reveal.js">Source code &amp; documentation</a>
-					</p>
-				</section>
-
+ -->
 			</div>
-
 		</div>
 
 		<script src="lib/js/head.min.js"></script>
