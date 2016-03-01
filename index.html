@@ -47,7 +47,7 @@
 						Hello everyone! Thanks for coming out tonight. Today I'll be talking to you about Mocking and Stubbing in RSpec.
 						<br>
 						<br>
-						I'll give you an overview of what is is, how and when to use it, and some things to keep in mind when implementing stubs and mocks.
+						I'll give you an overview of what it is, how and when to use it, and some things to keep in mind when implementing stubs and mocks.
 					</aside>
 				</section>
 
@@ -57,7 +57,7 @@
 					</p>
 
 					<aside class="notes">
-						Before we get into the details, I'd like to begin with a definition of what unit testing is. According to our trusty resource, Wikpedia, unit testing is a software development process in which the small testable parts of an application, called units, are individually and independently scrutinized for proper opertation.
+						Before we get into the details, I'd like to begin with a definition of what unit testing is. According to our trusty resource, Wikpedia, unit testing is a software development process in which the smallest testable parts of an application, called units, are individually and independently scrutinized for proper operation.
 						<br>
 						<br>
 						Unit testing requires that we test pieces of our application, such as a class or a single method, and isolate it from all of its dependencies and collaborators. This technique forces us to focus on the very specific implementation of just that piece of functionality.
@@ -71,10 +71,10 @@
 							<p>- Sam Phippen, 2014</p>
 						</blockquote>
 					<aside class="notes">
-						The concept of unit testing goes hand in hand with isolated test.
+						The concept of unit testing goes hand in hand with isolated testing.
 						<br>
 						<br>
-						I have a quote here from Sam Phippen, a member of the RSpec core team, who says: in order to achieve isolated testing, you necessarily have to fake part of the world that.
+						I have a quote here from Sam Phippen, a member of the RSpec core team, who says: in order to achieve isolated testing, you necessarily have to fake part of the world that your test is going to touch.
 						<br>
 						<br>
 						Enter test doubles.
@@ -91,7 +91,7 @@ gem install rspec       # rspec-core, rspec-expectations, rspec-mocks
 gem install rspec-mocks # rspec-mocks only
 					</code></pre>
 					<aside class="notes">
-						RSpec::Mocks, is the RSpec library that we use to generate test doubles. It's part of the regular RSpec gem, but if you only wanted this library you would do gem install rspec-mocks
+						RSpec::Mocks, is the RSpec library that we use to generate test doubles. It's part of the regular RSpec gem, but if you only wanted this library, you would do gem install rspec-mocks (the second line).
 					</aside>
 				</section>
 
@@ -106,16 +106,16 @@ stand_in_object = double('stand-in-object')
 					</code></pre>
 
 					<aside class="notes">
-						What's a test double - you ask? A test double is a term used for any object that stands in for a real object during a test. Often, test doubles are also refered to as mock object, test stubs, and fakes.
+						What's a test double - you ask? A test double is a term used for any object that stands in for a real object during a test.
 						<br>
 						<br>
 						We create a test double using the double method. The string argument is optional but highly recommended because it is used is failure messages.
 						<br>
 						<br>
-						Once you have a test double, you can allow or expect messages on it.
+						Once you have a test double, you can allow or expect messages on it. I will get into that later.
 						<br>
 						<br>
-						Doubles are "strict" by default, meaning that any message you have not allowed or expected will trigger an error. There are ways to make these doubles 'loose', enabling them to receive any message, but I won't get into that since it is generally not encouraged.
+						Doubles are "strict" by default, meaning that any message you have not allowed or expected will trigger an error. There are ways to make these doubles 'loose', enabling them to receive any message, but I won't get into that today since it is generally not encouraged.
 					</aside>
 
 				</section>
@@ -140,13 +140,13 @@ end
 					</code></pre>
 
 					<aside class="notes">
-						Let's take a look at how one might implement a method stub. Here I have a small bit a code for a ReportCard object, that get initialized with a student.
+						Let's take a look at how one might implement a method stub. Here I have a small bit a code for a ReportCard object, that gets initialized with a student.
 						<br>
 						<br>
 						Imagine that my student class is not yet implemented - perhaps I'm working on a team and someone else is assigned to build out the student class, or maybe I just want to focus on building out my Report Card until I have enough information about its interactions before implementing its collaborators.
 						<br>
 						<br>
-						The report card have an #average method, which takes the student's grades, and averages them using inject.
+						The report card has an #average method, which takes the student's grades, and averages them using inject.
 					</aside>
 				</section>
 
@@ -172,13 +172,13 @@ end
 						My example reads 'it calculates the student's average grade', and within my it block, I've created a double for a student - a class that does not yet exist in my system.
 						<br>
 						<br>
-						One the next line, I have a method stub, which provides a pre-determined return value for then student received the grades method.
+						One the next line, I have a method stub, which provides a pre-determined return value for when student receives the grades method.
 						<br>
 						<br>
-						I then create a report card which calls average, and I expect to recieve 80, which should be the average of the grades that were returned above.
+						I then create a report card which calls average, and I expect to receive 80, which should be the average of the grades that were returned above.
 						<br>
 						<br>
-						Return values for method stubs can take many forms, such as blocks, strings, array (as I have it).I'd recommended review the RSpec docs to see all your options.
+						Return values for method stubs can take many forms, such as blocks, strings, arrays (as I have it). I'd recommended reviewing the RSpec docs to see all your options.
 						<br>
 						<br>
 						At the end of the day, method stubs allow you to provide predefined (or fake) responses during the execution of a code example.
@@ -211,13 +211,13 @@ end
 					</code></pre>
 
 					<aside class="notes">
-						Now let's turn out attention to message expectations, also known as mock expectations. These are an expectation that an object should receive a message. While method stubs are concerned about the response to messages, mock expectations are about ensuring messages are actually received.
+						Now let's turn our attention to message expectations, also known as mock expectations. These are an expectation that an object should receive a message. While method stubs are concerned about the response to messages, mock expectations are about ensuring messages are actually received.
 						<br>
 						<br>
-						I've added a bit of code to the ReportCard class. Now it has a generate method, which is supposed to log a message if the student is failing. In this case, a failing means having an average of 50 or below.
+						I've added a bit of code to the ReportCard class. Now it has a generate method, which is supposed to log a message if the student has a failing grade. In this case, a failing grade means having an average of 50 or below.
 						<br>
 						<br>
-						In my application, I now have a Logger class, which has a class method called log_report_card. For not, we're not concerned about how the internals of this method work. We just care that is has this method, which should log something if the right conditions are met in the report card class.
+						In my application, I now have a Logger class, which has a class method called log_report_card. For now, we're not concerned about how the internals of this method work. We just care that is has this method, which should log something if the right conditions are met in the report card class.
 					</aside>
 				</section>
 
@@ -248,13 +248,13 @@ describe '#generate' do
 end
 					</code></pre>
 					<aside class="notes">
-						Our test to describe the #generate method might look like this. You'll see that I've created 2 contexts for the test, one for when the student is failing, and nother for when the student is passing.
+						Our test to describe the #generate method might look like this. You'll see that I've created 2 contexts for the test, one for when the student is failing, and another for when the student is passing.
 						<br>
 						<br>
 						In the first context, my example logs a message. I create another double of a student, and then stub out the response to the grades method with given values. You might have have noticed a difference in syntax. What I've done on this line is a short cut to the previous example where I created a test double on one line, and stubbed out the grades method on another line.
 						<br>
 						<br>
-						Next I create a message expectation. Since this student is clearly failing, we should create a log for this. We expect that our Logger class recieve log_report_card, with student passed in as an argument. Also, note the with(student) argument isn't mandatory, but since I want to only log a message pertaining to this particular student, I'm going to pass it in.
+						Next I create a message expectation. Since this student is clearly failing, we should create a log for this. We expect that our Logger class recieves log_report_card, with student passed in as an argument. The .with(student) argument isn't mandatory, but since I want to only log a message pertaining to this particular student, I'm going to pass it in.
 						<br>
 						<br>
 						Notice how I did not call the double method to create a test double of the Logger. Since the class already exists, I've implemented what's called a 'partial test double', which is quite common in tests. This is an extension of a real object in a system that is implemented with
@@ -264,7 +264,7 @@ end
 						I then create a report card and call generate, and the test passes.
 						<br>
 						<br>
-						The second context, is pretty much the exactly same example. The only difference is that the stubbed response from the grades method is a bunch of passing grades, and therefore we expect that the Logger should not receive log_report_card. Also, notice how I've also left off the student argument in the expectation. Since we're not expecing the message to be received at all, it's superfluous to have the arguments there for this test.
+						The second context, is pretty much the exact same example. The only difference is that the stubbed response from the grades method is a bunch of passing grades, and as a result, we expect that the Logger should not receive log_report_card. Also, notice how I've also left off the student argument in the expectation. Since we're not expecing the message to be received at all, it's superfluous to have the arguments there for this test.
 					</aside>
 				</section>
 
@@ -311,10 +311,10 @@ end
 
 					<aside class="notes">
 						Now that you know the distinction between stubs and mocks, you might be wondering when to use them.
-						There are a lot of opinions about this, but here are a few guidelines from David Chelimsky's The RSpec Book.
+						There are a lot of opinions about this, but here are a few guidelines, which I've taken from David Chelimsky's The RSpec Book.
 						<br>
 						<br>
-						First, if you want to test you we want to isolate our examples from dependencies that are
+						First, you might use use mocking and stubbing to isolate your examples from dependencies. This could because dependecies could be:
 							<ul>
 								<li>expensive to construct</li>
 								<li>involve external systems (network, server, file system)</li>
@@ -323,7 +323,7 @@ end
 							</ul>
 						<br>
 						<br>
-						Second, you want might also want to use test doubles to isolate your test from non-deterministic dependencies
+						Second, you want might also want to use mocking and stubbing to isolate your test from non-deterministic dependencies. Such dependencies would include anything that could exhibit difficult
 						<ul>
 							<li>can lead can lead to inconsistent test results</li>
 							<li>For example, if you app relies on a random generator, something that mimics rolling a dice for example, you might want to stub out the values returned by a dice_roll method.</li>
