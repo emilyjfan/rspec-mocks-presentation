@@ -191,9 +191,46 @@ end
 					</code></pre>
 				</section>
 
+				<section>
+					<h2>Nomenclature</h2>
+					<h3>Mocks ≠ Stubs</h3>
+					<p><strong>Test Stub</strong> = a Test Double that <em>only</em> supports method stubs</p>
+					<p><strong>Mock Object</strong> = a Test Double that supports message expectations <em>and</em> method stubs</p>
+				</section>
 
 				<section>
-					<h2>Mocks ≠ Stubs</h2>
+					<h2>Test Patterns: Changes in Flow</h2>
+					<p>Typical test pattern: <strong>arrange-act-asert</strong></p>
+					<p>Mock/Stubbing test pattern: <strong>assert-arrange-act</strong></p>
+					<br>
+					<p><strong>Test spies</strong> maintain the arrange-act-assert pattern</p>
+				<aside class="notes">
+1. Arrange all necessary preconditions and inputs.
+2. Act on the object or method under test.
+3. Assert that the expected results have occurred.
+				</aside>
+
+				</section>
+
+				<section>
+					<h2>Guidelines</h2>
+					<ol>
+						<li>Isolation from dependencies</li>
+						<li>Isolation from nondeterminism</li>
+						<li>Making progress without implementing dependencies</li>
+						<li>Interface discovery</li>
+						<li>Focus on role</li>
+					</ol>
+				</section>
+
+				<section>
+					<h2>Risks and Tradeoffs</h2>
+					<ol>
+						<li>Over specialization</li>
+						<li>Nested doubles</li>
+						<li>Absence of Coverage</li>
+						<li>Brittle examples</li>
+					</ol>
 				</section>
 
 				<section>
