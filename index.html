@@ -28,10 +28,6 @@
 			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
 			document.getElementsByTagName( 'head' )[0].appendChild( link );
 		</script>
-
-		<!--[if lt IE 9]>
-		<script src="lib/js/html5shiv.js"></script>
-		<![endif]-->
 	</head>
 
 	<body>
@@ -48,33 +44,40 @@
 						<small>By <a href="http://emilyjfan.github.io" target="_blank">Emily Fan</a> / <a href="http://twitter.com/emilyjustinefan" target="_blank">@emilyjustinefan</a></small>
 					</p>
 					<aside class="notes">
-						Hello everyone! Today I'll be talking to you about Mocking and Stubbing in RSpec.
-						I'll go over what is it, how and when to use it, and some things to keep in mind when implementing stubs and mocks.
+						Hello everyone! Thanks for coming out tonight. Today I'll be talking to you about Mocking and Stubbing in RSpec.
+						<br>
+						<br>
+						I'll give you an overview of what is is, how and when to use it, and some things to keep in mind when implementing stubs and mocks.
 					</aside>
 				</section>
 
 				<section>
 					<h2>Unit Testing</h2>
-					<ul>
-						<p>Unit testing is a software development process in which the smallest testable parts of an application, called units, are individually and independently scrutinized for proper operation.
-						</p>
-					</ul>
+					<p>A software development process in which the smallest testable parts of an application, called units, are individually and independently scrutinized for proper operation.
+					</p>
 
 					<aside class="notes">
-						Before we get into the details, I'd like to begin with a definition of what unit testing is. According to our trusty resource, Wikpedia, unit testing is a software development process in which the small testable part of an application, called units, are individually and independently scrutinized for proper opertation.
-
-						Unit testing requires that we test pieces of our application, such as a class or a single method, and isolate it from all of its dependencies and collaborators. This forces us to focus on the very specific implementation of just that piece of functionality.
+						Before we get into the details, I'd like to begin with a definition of what unit testing is. According to our trusty resource, Wikpedia, unit testing is a software development process in which the small testable parts of an application, called units, are individually and independently scrutinized for proper opertation.
+						<br>
+						<br>
+						Unit testing requires that we test pieces of our application, such as a class or a single method, and isolate it from all of its dependencies and collaborators. This technique forces us to focus on the very specific implementation of just that piece of functionality.
 					</aside>
 				</section>
 
 				<section>
 					<h2>Isolated Testing</h2>
-					<blockquote cite="http://searchservervirtualization.techtarget.com/definition/Our-Favorite-Technology-Quotations">
-						&ldquo;When you are writing an isolated test, you are basically hiding as much of your application as you can from that peice of code in order to be able to test it on its own.&rdquo;
-					</blockquote>
-					<p>- Sam Phippen, 2014</p>
+						<blockquote align="left" cite="http://searchservervirtualization.techtarget.com/definition/Our-Favorite-Technology-Quotations">
+							&ldquo;In order to achieve isolated testing, you necessarily have to fake part of the world that [your] test is going to touch.&rdquo;
+							<p>- Sam Phippen, 2014</p>
+						</blockquote>
 					<aside class="notes">
+						The concept of unit testing goes hand in hand with isolated test.
+						<br>
+						<br>
 						I have a quote here from Sam Phippen, a member of the RSpec core team, who says: in order to achieve isolated testing, you necessarily have to fake part of the world that.
+						<br>
+						<br>
+						Enter test doubles.
 					</aside>
 				</section>
 
@@ -83,7 +86,12 @@
 					<p>
 						Test-double framework for RSpec with support for method stubs, fakes, and message expectations on generated test-doubles and real objects alike.
 					</p>
+					<pre><code class="hljs" data-trim contenteditable>
+gem install rspec       # rspec-core, rspec-expectations, rspec-mocks
+gem install rspec-mocks # rspec-mocks only
+					</code></pre>
 					<aside class="notes">
+						RSpec::Mocks, is the RSpec library that we use to generate test doubles. It's part of the regular RSpec gem, but if you only wanted this library you would do gem install rspec-mocks
 					</aside>
 				</section>
 
@@ -94,18 +102,20 @@
 					</p>
 
 					<pre><code class="hljs" data-trim contenteditable>
-
 stand_in_object = double('stand-in-object')
-
 					</code></pre>
 
-					<aside class="notes">What's a test double? you ask. A test double is a term used for any object that stands in for a real object during a test. Often, test doubles are also refered to as mock object, test stubs, and fakes.
-
-					We create a test double using the double method. The string argument is optional but highly recommended because it is used is failure messages
-
-					Doubles are "strict" by default -- any message you have not allowed or expected will trigger an error -- but you can switch a double to being "loose". When creating a double, you can allow messages (and set their return values) by passing a hash.
-
-					Once you have a test double, you can allow or expect messages on it.
+					<aside class="notes">
+						What's a test double - you ask? A test double is a term used for any object that stands in for a real object during a test. Often, test doubles are also refered to as mock object, test stubs, and fakes.
+						<br>
+						<br>
+						We create a test double using the double method. The string argument is optional but highly recommended because it is used is failure messages.
+						<br>
+						<br>
+						Once you have a test double, you can allow or expect messages on it.
+						<br>
+						<br>
+						Doubles are "strict" by default, meaning that any message you have not allowed or expected will trigger an error. There are ways to make these doubles 'loose', enabling them to receive any message, but I won't get into that since it is generally not encouraged.
 					</aside>
 
 				</section>
@@ -128,10 +138,21 @@ class ReportCard
   end
 end
 					</code></pre>
+
+					<aside class="notes">
+						Let's take a look at how one might implement a method stub. Here I have a small bit a code for a ReportCard object, that get initialized with a student.
+						<br>
+						<br>
+						Imagine that my student class is not yet implemented - perhaps I'm working on a team and someone else is assigned to build out the student class, or maybe I just want to focus on building out my Report Card until I have enough information about its interactions before implementing its collaborators.
+						<br>
+						<br>
+						The report card have an #average method, which takes the student's grades, and averages them using inject.
+					</aside>
 				</section>
 
 				<section>
 					<h2>Method Stubs</h2>
+					<small>Inside report_card_spec.rb</small>
 					<pre><code class="hljs" data-trim contenteditable>
 describe '#average' do
   it 'calculates the student\'s average grade' do
@@ -143,12 +164,31 @@ describe '#average' do
   end
 end
 					</code></pre>
+					<aside class="notes">
+						Here, I have an example of what a unit test for method could look like.
+						This code would exist within a file called report_card_spec.rb, and would describe the #average method.
+						<br>
+						<br>
+						My example reads 'it calculates the student's average grade', and within my it block, I've created a double for a student - a class that does not yet exist in my system.
+						<br>
+						<br>
+						One the next line, I have a method stub, which provides a pre-determined return value for then student received the grades method.
+						<br>
+						<br>
+						I then create a report card which calls average, and I expect to recieve 80, which should be the average of the grades that were returned above.
+						<br>
+						<br>
+						Return values for method stubs can take many forms, such as blocks, strings, array (as I have it).I'd recommended review the RSpec docs to see all your options.
+						<br>
+						<br>
+						At the end of the day, method stubs allow you to provide predefined (or fake) responses during the execution of a code example.
+					</aside>
 				</section>
 
 				<section>
 					<h2>Message (Mock) Expectactions</h2>
 					<p>
-						An expectation that the object should receive the message
+						An expectation that an object should receive a message
 					</p>
 
 					<pre><code class="hljs" data-trim contenteditable>
@@ -156,21 +196,39 @@ class ReportCard
   def generate(student)
     Logger.log_report_card(student) if average <= 50
   end
-
   .
   .
   .
 end
 					</code></pre>
+
+					<pre><code class="hljs" data-trim contenteditable>
+class Logger
+  def self.log_report_card(student)
+    # some code that logs stuff
+  end
+end
+					</code></pre>
+
+					<aside class="notes">
+						Now let's turn out attention to message expectations, also known as mock expectations. These are an expectation that an object should receive a message. While method stubs are concerned about the response to messages, mock expectations are about ensuring messages are actually received.
+						<br>
+						<br>
+						I've added a bit of code to the ReportCard class. Now it has a generate method, which is supposed to log a message if the student is failing. In this case, a failing means having an average of 50 or below.
+						<br>
+						<br>
+						In my application, I now have a Logger class, which has a class method called log_report_card. For not, we're not concerned about how the internals of this method work. We just care that is has this method, which should log something if the right conditions are met in the report card class.
+					</aside>
 				</section>
 
 				<section>
 					<h2>Message (Mock) Expectactions</h2>
+					<small>Inside report_card_spec.rb</small>
 					<pre><code class="hljs" data-trim contenteditable>
 describe '#generate' do
   context 'when the student is failing' do
     it 'logs a message' do
-      student = double('student', grades: [40, 40, 50, 40])
+      student = double('student', :grades => [30, 40, 50, 40])
       expect(Logger).to receive(:log_report_card).with(student)
       report_card = ReportCard.new(student)
 
@@ -180,7 +238,7 @@ describe '#generate' do
 
   context 'when the student is passing' do
     it 'does not log a message' do
-      student = double('student', grades: [80, 70, 80, 90])
+      student = double('student', :grades => [80, 70, 80, 90])
       expect(Logger).to_not receive(:log_report_card)
       report_card = ReportCard.new(student)
 
@@ -189,6 +247,25 @@ describe '#generate' do
   end
 end
 					</code></pre>
+					<aside class="notes">
+						Our test to describe the #generate method might look like this. You'll see that I've created 2 contexts for the test, one for when the student is failing, and nother for when the student is passing.
+						<br>
+						<br>
+						In the first context, my example logs a message. I create another double of a student, and then stub out the response to the grades method with given values. You might have have noticed a difference in syntax. What I've done on this line is a short cut to the previous example where I created a test double on one line, and stubbed out the grades method on another line.
+						<br>
+						<br>
+						Next I create a message expectation. Since this student is clearly failing, we should create a log for this. We expect that our Logger class recieve log_report_card, with student passed in as an argument. Also, note the with(student) argument isn't mandatory, but since I want to only log a message pertaining to this particular student, I'm going to pass it in.
+						<br>
+						<br>
+						Notice how I did not call the double method to create a test double of the Logger. Since the class already exists, I've implemented what's called a 'partial test double', which is quite common in tests. This is an extension of a real object in a system that is implemented with
+						test-double like behaviour in the context of a test.
+						<br>
+						<br>
+						I then create a report card and call generate, and the test passes.
+						<br>
+						<br>
+						The second context, is pretty much the exactly same example. The only difference is that the stubbed response from the grades method is a bunch of passing grades, and therefore we expect that the Logger should not receive log_report_card. Also, notice how I've also left off the student argument in the expectation. Since we're not expecing the message to be received at all, it's superfluous to have the arguments there for this test.
+					</aside>
 				</section>
 
 				<section>
@@ -196,9 +273,19 @@ end
 					<h3>Mocks ≠ Stubs</h3>
 					<p><strong>Test Stub</strong> = a Test Double that <em>only</em> supports method stubs</p>
 					<p><strong>Mock Object</strong> = a Test Double that supports message expectations <em>and</em> method stubs</p>
+
+					<aside class="notes">
+						Now that we've seen a few examples of method stubs and mock expecations, it's important to note that mocks are not stubs. The nomenclature around these testing tools can be confusing.
+						<br>
+						<br>
+						Discussions about stubbing and mocking also make reference to Test Stubs and Mock Objects. Test stubs are simply test doubles that ONLY support method stubs.
+						<br>
+						<br>
+						Mock Objects are also test doubles, but they support both message expectations AND method stubs.
+					</aside>
 				</section>
 
-				<section>
+<!-- 				<section>
 					<h2>Test Patterns: Changes in Flow</h2>
 					<p>Typical test pattern: <strong>arrange-act-asert</strong></p>
 					<p>Mock/Stubbing test pattern: <strong>assert-arrange-act</strong></p>
@@ -211,16 +298,57 @@ end
 				</aside>
 
 				</section>
-
+ -->
 				<section>
-					<h2>Guidelines</h2>
+					<h2>Usage Guidelines</h2>
 					<ol>
 						<li>Isolation from dependencies</li>
 						<li>Isolation from nondeterminism</li>
 						<li>Making progress without implementing dependencies</li>
 						<li>Interface discovery</li>
-						<li>Focus on role</li>
+						<li>Focus on roles and interactions</li>
 					</ol>
+
+					<aside class="notes">
+						Now that you know the distinction between stubs and mocks, you might be wondering when to use them.
+						There are a lot of opinions about this, but here are a few guidelines from David Chelimsky's The RSpec Book.
+						<br>
+						<br>
+						First, if you want to test you we want to isolate our examples from dependencies that are
+							<ul>
+								<li>expensive to construct</li>
+								<li>involve external systems (network, server, file system)</li>
+								<li>have dependencies on other expensive objects</li>
+								<li>or function slowly</li>
+							</ul>
+						<br>
+						<br>
+						Second, you want might also want to use test doubles to isolate your test from non-deterministic dependencies
+						<ul>
+							<li>can lead can lead to inconsistent test results</li>
+							<li>For example, if you app relies on a random generator, something that mimics rolling a dice for example, you might want to stub out the values returned by a dice_roll method.</li>
+						</ul>
+						<br>
+						<br>
+						Third, you might consider using a test double to make progress without implementing a dependency/collaborator.
+						<ul>
+							<li>collaborators that have not been implemented yet</li>
+							<li>collaborators might need to be implemented by another team/person</li>
+							<li>allows us to continue focusing on the subject under test</li>
+						</ul>
+						<br>
+						<br>
+						Fourth, interface discovery
+						<ul>
+							<li>allows developers to design new interfaces as they are needed and make decisions about them as late as possible when we have the most information about how they will be used</li>
+						</ul>
+						<br>
+						<br>
+						Lastly, it is argued that mock objects keep a focus on object interaction rather than state.
+						<ul>
+							<li>Much of object-oriented systems has to do with interfaces and interactions, and mocks can help faciliate focus around interations betwen objects, rather than side effects on internal state of any individual object</li>
+						</ul>
+					</aside>
 				</section>
 
 				<section>
@@ -228,91 +356,48 @@ end
 					<ol>
 						<li>Over specialization</li>
 						<li>Nested doubles</li>
-						<li>Absence of Coverage</li>
+						<li>Absence of coverage</li>
 						<li>Brittle examples</li>
 					</ol>
+
+					<aside class="notes">
+						My presentation would not be complete without mention of some risks and trade-offs of mocking and stubbing. I've mentioned some of the reasons in favour of using mocks, however, they can create design problems in your tests if not implemented correctly.
+						<ul>
+							<li>First, it can be easy to create overly specific examples. If we find ourselves creating a bunch of mocks in one examples, we end up with a long and confusing setup.</li>
+							<li>You should only specify that is absolutely necessary for the current example</li>
+							<li>Setting up mocks should not be difficult. If it is, it could be a sign that you could have tightly coupled code</li>
+						</ul>
+						<ul>
+							<li>Second, test doubles should be shallow, meaning that they should not nested within each other generally speaking.</li>
+							<li>When you have doubles, returning double, returning doubles, this is also a sign that you might have tightly coupled code.</li>
+						</ul>
+						<ul>
+							<li>Third, one of the biggest pitfalls of mocking objects can lead to brittle examples in your unit tests</li>
+							<li>The more we specify about interactions and dependencies, the more likely that example will be impacts by changes in code</li>
+							<li>For example, if you create tests that have numerous and trivial message expectations, you will very quikcly find that your tests will fail as soon as you change your code. Every time you refactor you code, for example, you shouldn't have to also refactor your tests.</li>
+						</ul>
+						As you can see, mocking and stubbing can be very beneficial in designing your code, but it can also have some unintended consequences. If you are considering using mock objects in your test, my advice would be to use them simply (there should not be hard to setup in your tests) and use them only when required.
+					</aside>
 				</section>
 
 				<section>
 					<h2>Resources</h2>
 					<ul>
-						<li><a href="https://relishapp.com/rspec/rspec-mocks/v/3-2/docs" target="_blank">RSpec Mocks 3.2 - Documentation</a></li>
+						<li><a href="https://github.com/rspec/rspec-mocks" target="_blank">RSpec Mocks - Github README</a></li>
+						<li><a href="https://relishapp.com/rspec/rspec-mocks/docs" target="_blank">RSpec Mocks 3.4 - Documentation</a></li>
 						<li><a href="https://www.youtube.com/watch?v=kiHdUU73D14" target="_blank">An Introduction to Spies in RSpec - Sam Phippen (2014)</a></li>
 						<li><a href="https://www.youtube.com/watch?v=R9FOchgTtLM" target="_blank">Why You Don't Get Mock Objects - Gregory Moeck (2011)</a></li>
 						<li><a href="http://www.amazon.ca/The-RSpec-Book-Behaviour-Development/dp/1934356379">The RSpec Book - David Chelimsky (2010)</a></li>
 						<li><a href="http://www.jmock.org/oopsla2004.pdf" target="_blank">Mock Roles Not Objects - Steve Freeman, Nat Pryce, Tim Mackinnon, Joe Walnes (2004)</a></li>
 						<li><a href="http://www.martinfowler.com/articles/mocksArentStubs.html" target="_blank">Mocks Aren't Stubs - Martin Fowler (2007)</a></li>
 					</ul>
-
-				</section>
-
-<!-- 				<section data-markdown>
-					<script type="text/template">
-						## Markdown support
-
-						Write content using inline or external Markdown.
-						Instructions and more info available in the [readme](https://github.com/hakimel/reveal.js#markdown).
-
-						```
-						<section data-markdown>
-						  ## Markdown support
-
-						  Write content using inline or external Markdown.
-						  Instructions and more info available in the [readme](https://github.com/hakimel/reveal.js#markdown).
-						</section>
-						```
-					</script>
-				</section>
- -->
-
-				<section data-background="http://i.giphy.com/90F8aUepslB84.gif">
-					<h2></h2>
 				</section>
 
 				<section>
-					<h2></h2>
-					<pre><code class="hljs" data-trim contenteditable>
-
-
-					</code></pre>
+						<p><a href="https://github.com/emilyjfan/rspec-mocks-presentation" target="_blank">https://github.com/emilyjfan/rspec-mocks-presentation</a></p>
+						<br>
+						<p><a href="http://twitter.com/emilyjustinefan" target="_blank">@emilyjustinefan</a></p>
 				</section>
-
-<!-- 				<section>
-					<h2>Tabular Tables</h2>
-					<table>
-						<thead>
-							<tr>
-								<th>Item</th>
-								<th>Value</th>
-								<th>Quantity</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td>Apples</td>
-								<td>$1</td>
-								<td>7</td>
-							</tr>
-							<tr>
-								<td>Lemonade</td>
-								<td>$2</td>
-								<td>18</td>
-							</tr>
-							<tr>
-								<td>Bread</td>
-								<td>$3</td>
-								<td>2</td>
-							</tr>
-						</tbody>
-					</table>
-				</section>
- -->
-<!-- 				<section>
-					<h2>Export to PDF</h2>
-					<p>Presentations can be <a href="https://github.com/hakimel/reveal.js#pdf-export">exported to PDF</a>, here's an example:</p>
-					<iframe src="https://www.slideshare.net/slideshow/embed_code/42840540" width="445" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:3px solid #666; margin-bottom:5px; max-width: 100%;" allowfullscreen> </iframe>
-				</section>
- -->
 			</div>
 		</div>
 
