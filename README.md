@@ -1,4 +1,4 @@
-A presentation on RSpec stubbing and mocking for Ruby Lighting Talks T.O. - March 1, 2016.
+A presentation on RSpec stubbing and mocking for Ruby Lighting Talks T.O. - March 8, 2016.
 
 PDF version to come.
 
