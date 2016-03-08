@@ -363,20 +363,23 @@ end
 					<aside class="notes">
 						My presentation would not be complete without mention of some risks and trade-offs of mocking and stubbing. I've mentioned some of the reasons in favour of using mocks, however, they can create design problems in your tests if not implemented correctly.
 						<ul>
-							<li>First, it can be easy to create overly specific examples. If we find ourselves creating a bunch of mocks in one examples, we end up with a long and confusing setup.</li>
-							<li>You should only specify that is absolutely necessary for the current example</li>
+							<li>First, it can be easy to create overly specific examples. If we find ourselves creating a bunch of mocks in one example, we end up with a long and confusing setup.</li>
+							<li>You should only specify what is absolutely necessary for the current example</li>
 							<li>Setting up mocks should not be difficult. If it is, it could be a sign that you could have tightly coupled code</li>
 						</ul>
 						<ul>
 							<li>Second, test doubles should be shallow, meaning that they should not nested within each other generally speaking.</li>
 							<li>When you have doubles, returning double, returning doubles, this is also a sign that you might have tightly coupled code.</li>
 						</ul>
+                        <ul>
+                            <li>Third, test doubles have to accurately model the behavior of the object they are mocking, which can be difficult to maintain if objects are frequently refactored. Inadequate mocking can lead to an absence of coverage, which may register false positives and render the unit test as  inaccurate.</li>
+                        </ul>
 						<ul>
-							<li>Third, one of the biggest pitfalls of mocking objects can lead to brittle examples in your unit tests</li>
-							<li>The more we specify about interactions and dependencies, the more likely that example will be impacts by changes in code</li>
+							<li>Lastly, one of the biggest pitfalls of mocking objects can lead to brittle examples in your unit tests</li>
+							<li>The more we specify about interactions and dependencies, the more likely that example will be impacted by changes in code</li>
 							<li>For example, if you create tests that have numerous and trivial message expectations, you will very quikcly find that your tests will fail as soon as you change your code. Every time you refactor you code, for example, you shouldn't have to also refactor your tests.</li>
 						</ul>
-						As you can see, mocking and stubbing can be very beneficial in designing your code, but it can also have some unintended consequences. If you are considering using mock objects in your test, my advice would be to use them simply (there should not be hard to setup in your tests) and use them only when required.
+						As you can see, mocking and stubbing can be very beneficial in designing your code, but it can also have some unintended consequences. If you are considering using mock objects in your test, my advice would be to use them simply (there should not be hard to setup in your tests) and use them to test your object's behavior rather than the internal implementation of the objects themselves.
 					</aside>
 				</section>
 
