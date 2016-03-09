@@ -44,10 +44,15 @@
 						<small>By <a href="http://emilyjfan.github.io" target="_blank">Emily Fan</a> / <a href="http://twitter.com/emilyjustinefan" target="_blank">@emilyjustinefan</a></small>
 					</p>
 					<aside class="notes">
-						Hello everyone! Thanks for coming out tonight. Today I'll be talking to you about Mocking and Stubbing in RSpec.
+						Hello everyone! Thanks for coming out tonight. Today I'll be talking to you about the thrilling topic of Mocking and Stubbing in RSpec.
 						<br>
 						<br>
-						I'll give you an overview of what it is, how and when to use it, and some things to keep in mind when implementing stubs and mocks.
+						During this presentation, I'll be giving you:
+                        <ul>
+                            <li>an overview of what stubbing and mocking is is</li>
+                            <li>how and when to use it</li>
+                            <li>and some things to keep in mind when implementing them</li>
+                        </ul>
 					</aside>
 				</section>
 
@@ -60,7 +65,7 @@
 						Before we get into the details, I'd like to begin with a definition of what unit testing is. According to our trusty resource, Wikpedia, unit testing is a software development process in which the smallest testable parts of an application, called units, are individually and independently scrutinized for proper operation.
 						<br>
 						<br>
-						Unit testing requires that we test pieces of our application, such as a class or a single method, and isolate it from all of its dependencies and collaborators. This technique forces us to focus on the very specific implementation of just that piece of functionality.
+						This  means that unit testing requires that we test pieces of our application, such as a class or a single method, and isolate it from all of its dependencies and collaborators. This technique forces us to focus on the very specific implementation of the unit of code we are testing.
 					</aside>
 				</section>
 
@@ -146,7 +151,7 @@ end
 						Imagine that my student class is not yet implemented - perhaps I'm working on a team and someone else is assigned to build out the student class, or maybe I just want to focus on building out my Report Card until I have enough information about its interactions before implementing its collaborators.
 						<br>
 						<br>
-						The report card has an #average method, which takes the student's grades, and averages them using inject.
+						The report card has an #average method, which takes the student's grades, and averages them.
 					</aside>
 				</section>
 
@@ -165,14 +170,14 @@ describe '#average' do
 end
 					</code></pre>
 					<aside class="notes">
-						Here, I have an example of what a unit test for method could look like.
+						Here, I have an example of what a unit test could look like.
 						This code would exist within a file called report_card_spec.rb, and would describe the #average method.
 						<br>
 						<br>
 						My example reads 'it calculates the student's average grade', and within my it block, I've created a double for a student - a class that does not yet exist in my system.
 						<br>
 						<br>
-						One the next line, I have a method stub, which provides a pre-determined return value for when student receives the grades method.
+						On the next line, I have a method stub, which provides a pre-determined return value for when student receives the grades method.
 						<br>
 						<br>
 						I then create a report card which calls average, and I expect to receive 80, which should be the average of the grades that were returned above.
@@ -264,7 +269,7 @@ end
 						I then create a report card and call generate, and the test passes.
 						<br>
 						<br>
-						The second context, is pretty much the exact same example. The only difference is that the stubbed response from the grades method is a bunch of passing grades, and as a result, we expect that the Logger should not receive log_report_card. Also, notice how I've also left off the student argument in the expectation. Since we're not expecing the message to be received at all, it's superfluous to have the arguments there for this test.
+						The second context, is pretty much the exact same example. The only difference is that the stubbed response from the grades method is a bunch of passing grades, and as a result, we expect that the Logger should not receive log_report_card. Also, notice how I've also left off the student argument in the expectation. Since we're not expecting the message to be received at all, it's superfluous to have the arguments there for this test.
 					</aside>
 				</section>
 
@@ -323,9 +328,9 @@ end
 							</ul>
 						<br>
 						<br>
-						Second, you want might also want to use mocking and stubbing to isolate your test from non-deterministic dependencies. Such dependencies would include anything that could exhibit difficult
+						Second, you want might also want to use mocking and stubbing to isolate your test from non-deterministic dependencies. Such dependencies would include anything that could exhibit different outputs given the same inputs.
 						<ul>
-							<li>can lead can lead to inconsistent test results</li>
+							<li>Without stubbing out return values, you could have inconsistent test results</li>
 							<li>For example, if you app relies on a random generator, something that mimics rolling a dice for example, you might want to stub out the values returned by a dice_roll method.</li>
 						</ul>
 						<br>
